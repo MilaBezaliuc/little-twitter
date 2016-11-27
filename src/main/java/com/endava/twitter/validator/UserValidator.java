@@ -25,7 +25,7 @@ public class UserValidator implements Validator {
         User user = (User) o;
 
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "username", "Required");
-        if (user.getUsername().length() < 3 || user.getUsername().length() > 12) {
+        if (user.getUsername().length() < 3 || user.getUsername().length() > 10) {
             errors.rejectValue("username", "Size.user.username");
         }
 
@@ -39,10 +39,10 @@ public class UserValidator implements Validator {
         }
 
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "email", "Required");
-        if(!user.getEmail().matches("^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-.]+$")) {
+        if (!user.getEmail().matches("^[_A-Za-z0-9-]{2,}(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$")) {
             errors.rejectValue("email", "Wrong.user.email");
         }
-        if(userService.listOfEmails().contains(user.getEmail())){
+        if (userService.listOfEmails().contains(user.getEmail())) {
             errors.rejectValue("email", "Duplicate.user.email");
         }
 

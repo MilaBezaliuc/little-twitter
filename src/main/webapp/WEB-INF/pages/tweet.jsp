@@ -165,6 +165,7 @@
                                         <table style="font-size: xx-large">
                                             <tr>
                                                 <td><span style="cursor:pointer" onclick="insertAtCaret('tweet', ' 😁');return false;"> 😁</span></td>
+                                                <td><span style="cursor:pointer" onclick="insertAtCaret('tweet', ' 😉');return false;"> 😉</span></td>
                                                 <td><span style="cursor:pointer" onclick="insertAtCaret('tweet', ' 😃');return false;"> 😃</span></td>
                                                 <td><span style="cursor:pointer" onclick="insertAtCaret('tweet', ' 😆');return false;"> 😆</span></td>
                                                 <td><span style="cursor:pointer" onclick="insertAtCaret('tweet', ' 😍');return false;"> 😍</span></td>

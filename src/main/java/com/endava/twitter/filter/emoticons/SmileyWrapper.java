@@ -14,9 +14,12 @@ public class SmileyWrapper extends HttpServletRequestWrapper {
     private static Map<String, String> emoticons = new ConcurrentHashMap<>();
 
     static {
-        emoticons.put("smile", "<img width='20px' src='/resources/emoticons/sm1.png'/>");
-        emoticons.put("smile2", "\uD83D\uDE01");
+        emoticons.put("smile", "\uD83D\uDE01");
         emoticons.put("cry", "\uD83D\uDE22");
+        emoticons.put("laugh", "\uD83D\uDE06");
+        emoticons.put("sad", "\uD83D\uDE1E");
+        emoticons.put("tongue", "\uD83D\uDE1D");
+        emoticons.put("wink", "\uD83D\uDE09");
     }
 
     public String[] getParameterValues(String parameter) {
@@ -48,13 +51,13 @@ public class SmileyWrapper extends HttpServletRequestWrapper {
     }
 
     private String replaceWithEmoticons(String value) {
-        value = value.replaceAll(":&#41;", emoticons.get("smile2"));
+        value = value.replaceAll(":&#41;", emoticons.get("smile"));
         value = value.replaceAll(":&#39;&#40;", emoticons.get("cry"));
-//        value = value.replaceAll("\\(", "&#40;").replaceAll("\\)", "&#41;");
-//        value = value.replaceAll("'", "&#39;");
-//        value = value.replaceAll("eval\\((.*)\\)", "");
-//        value = value.replaceAll("[\\\"\\\'][\\s]*javascript:(.*)[\\\"\\\']", "\"\"");
-//        value = value.replaceAll("script", "");
+        value = value.replaceAll(":D", emoticons.get("laugh"));
+        value = value.replaceAll(":&#40;", emoticons.get("sad"));
+        value = value.replaceAll(":P", emoticons.get("tongue"));
+        value = value.replaceAll(";&#41;", emoticons.get("wink"));
+
         return value;
     }
 }

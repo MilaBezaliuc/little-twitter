@@ -7,7 +7,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <!-- This file has been downloaded from Bootsnipp.com. Enjoy! -->
+
     <title>Log in</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <style type="text/css">
@@ -17,7 +17,7 @@
     <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
     <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
 </head>
-<body style="background-color: #efefef">
+<body style="background-color: #eeeeee">
 
 <div class="container" >
     <div class="wrapper">

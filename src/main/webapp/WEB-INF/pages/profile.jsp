@@ -11,6 +11,7 @@
     <title>User Profile</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="http://netdna.bootstrapcdn.com/bootstrap/3.1.0/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/sweetalert2/6.1.1/sweetalert2.css">
     <style type="text/css">
         <%@include file="../resources/css/profile.css"%>
         <%@include file="../resources/css/bootstrap.css"%>
@@ -22,6 +23,8 @@
             background-color: #eeeeee;
         }
     </style>
+    <script src="https://cdn.jsdelivr.net/sweetalert2/6.1.1/sweetalert2.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/sweetalert2/6.1.1/sweetalert2.js"></script>
     <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
     <script src="http://netdna.bootstrapcdn.com/bootstrap/3.1.0/js/bootstrap.min.js"></script>
 </head>
@@ -69,8 +72,11 @@
                             </c:if>
 
                             <c:if test="${isFollowed!=0}">
-                                <a class="pull-right btn btn-danger btn-sm" href="/user/unfollow/${user.username}">-
-                                    Unfollow</a>
+                                <input type="hidden" id="unflw" value="${user.username}">
+                                <span class="pull-right btn btn-danger btn-sm"id="unflw"
+                                        onclick="sweetUnf()">-
+                                    Unfollow</span>
+
                             </c:if>
                         </div>
                     </div>
@@ -110,3 +116,26 @@
 </body>
 </html>
 
+<script>
+    function sweetUnf() {
+        var id = $(document.getElementById("unflw")).val();
+        swal({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            type: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, unfollow this user!'
+
+        }).then(function () {
+            $.ajax({
+                url: '/unfollow/' + id,
+                data: id,
+                dataType: 'text',
+                type: 'GET'
+            });
+            location.reload().fadeIn('fast');
+        })
+    }
+</script>

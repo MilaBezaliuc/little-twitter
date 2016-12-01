@@ -3,6 +3,7 @@ package com.endava.twitter.controller;
 import com.endava.twitter.model.Like;
 import com.endava.twitter.model.Tweet;
 import com.endava.twitter.model.User;
+import com.endava.twitter.service.CommentServiceImpl;
 import com.endava.twitter.service.LikeServiceImpl;
 import com.endava.twitter.service.TweetServiceImpl;
 import com.endava.twitter.service.UserServiceImpl;
@@ -10,6 +11,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -27,10 +32,13 @@ public class RestService {
     UserServiceImpl userService;
 
     @Autowired
-    TweetServiceImpl tweetservice;
+    TweetServiceImpl tweetService;
 
     @Autowired
     private LikeServiceImpl likeService;
+
+    @Autowired
+    CommentServiceImpl commentService;
 
     @RequestMapping(value = "/allusers/", method = RequestMethod.GET)
     public ResponseEntity<List<User>> listAllTweets() {
@@ -52,15 +60,19 @@ public class RestService {
 
     @RequestMapping(value = "/addLike", method = RequestMethod.POST)
     @ResponseBody
-    public String addLike(@RequestParam int tweet_id, @RequestParam int user_id) {
-        Like like = new Like(tweetservice.getTweetById(tweet_id), userService.getUserById(user_id));
-        likeService.addLike(like);
-        return tweetservice.tweetLikesById(tweet_id);
+    public boolean addLike(@RequestParam int tweet_id, @RequestParam int user_id) {
+        Like like = new Like(tweetService.getTweetById(tweet_id), userService.getUserById(user_id));
+        if (Integer.parseInt(tweetService.tweetLikesById(tweet_id))==1)
+            return true;
+        else {
+            likeService.addLike(like);
+            return false;
+        }
     }
 
     @RequestMapping(value = "/likesCount", method = RequestMethod.GET)
     public int getLikesCount(@RequestParam int tweet_id) {
-        return Integer.parseInt(tweetservice.tweetLikesById(tweet_id));
+        return Integer.parseInt(tweetService.tweetLikesById(tweet_id));
     }
 
     @RequestMapping(value = "/getnexttweets/{count}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -69,6 +81,25 @@ public class RestService {
 
         return new ResponseEntity<List<Tweet>>(tweets, HttpStatus.OK);
     }
+
+//    @RequestMapping(value = "/{id}/addComment", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+//    public ResponseEntity<List<Comment>> addCommentGet(@PathVariable int id) {
+////        tweetService.getTweetById(id);
+//
+//        return new ResponseEntity<>(tweetService.getComments(id), HttpStatus.OK);
+//    }
+
+    @Transactional
+    @RequestMapping(value = "unfollow/{username}", method = RequestMethod.GET)
+    public void unfollow(Model model, @PathVariable String username) {
+        User me = userService.getUserByName(getPrincipal());
+        userService.removeUserFromUsersIFollow(me, username);
+    }
+
+//    @RequestMapping(value = "/{id}/addComment", method = RequestMethod.POST)
+//    public void addComment(@PathVariable int id, @RequestParam String text) {
+//        commentService.addComment(new Comment(userService.getUserByName(getPrincipal()), tweetService.getTweetById(id), text));
+//    }
 
     @RequestMapping(value = "/searchUser", method = RequestMethod.GET)
     public List<String> findUser(@RequestParam String username) {
@@ -111,5 +142,16 @@ public class RestService {
             return null;
         }
         return null;
+    }
+
+    public String getPrincipal() {
+        String userName = null;
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (principal instanceof UserDetails) {
+            userName = ((UserDetails) principal).getUsername();
+        } else {
+            userName = principal.toString();
+        }
+        return userName;
     }
 }

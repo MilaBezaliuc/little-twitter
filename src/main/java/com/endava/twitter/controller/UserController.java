@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import javax.servlet.http.HttpServletRequest;
+
 /**
  * Created by mbezaliuc on 11/2/2016.
  */
@@ -61,7 +63,7 @@ public class UserController {
 
     @Transactional
     @RequestMapping(value = "unfollow/{username}", method = RequestMethod.GET)
-    public String unfollow(Model model, @PathVariable String username) {
+    public String unfollow(Model model, @PathVariable String username, HttpServletRequest request) {
         User me = userService.getUserByName(getPrincipal());
         model.addAttribute("isFollowed", userService.isFollowed(userService.getIdByName(getPrincipal()),
                 userService.getIdByName(username)));

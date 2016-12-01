@@ -7,125 +7,33 @@
 
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <title>MAD-Twitter</title>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <link rel="stylesheet" href="/resources/css/bootstrap.min.css">
-    <link rel="stylesheet" href="/resources/css/bootstrap.css">
-    <link rel="stylesheet" href="/resources/css/profile.css">
-    <link rel="stylesheet" href="/resources/css/style.css">
-    <link rel="stylesheet" href="/resources/css/card.css">
-    <%--<link rel="stylesheet" href="/webjars/bootstrap/3.3.7-1/css/bootstrap.min.css">--%>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+<jsp:include page="fragments/headTag.jsp"/>
+<script type="text/javascript">
+    // Using jQuery.
 
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.js"></script>
-    <script src="http://malsup.github.com/jquery.form.js"></script>
-    <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
-    <script src="../resources/js/autosizeTextarea.js"></script>
-
-    <script>
-        function getCount(a) {
-            $.ajax({
-                type: 'GET',
-                url: '/likesCount',
-                data: {tweet_id: a},
-                success: function (data) {
-//                    $('#result22').attr('value',В data);
-//                    $('p').data('lik').html(data);
-//                    alert(data);
-//                           return data;
-//                        $('#').html(data);
+    $(function () {
+        $('form').each(function () {
+            $(this).find('input').keypress(function (e) {
+                // Enter pressed?
+                if (e.which == 10 || e.which == 13) {
+                    this.form.submit();
                 }
-
             });
-        }
+            $(this).find('textarea').keypress(function (e) {
+                // Enter pressed?
+                if (e.which == 10 || e.which == 13) {
+                    this.form.submit();
+                }
+            });
 
-        $(document).ready(function () {
-            //var uid = $('#uid').val();
-            //var tid = $(this);
-            $('.liking').on('click', function () { //bind click handler
-                var data_id = $(this).data('like');
-                var data_usr = $(this).data('like2');
-                var thisButt = $(this);
-                //console.log("ID:" +data_id+"and"+data_usr);     //things to do on click
-                $.ajax({
-                    type: 'POST',
-                    url: '/addLike',
-                    data: {tweet_id: data_id, user_id: data_usr},
-                    success: function (data) {
-                        thisButt.attr("disabled", true);
-                        var current = parseInt(thisButt.siblings(".likeCount").text()) + 1;
-                        var now = current + 1;
-                        thisButt.siblings(".likeCount").html(current);
-//                        alert()
-                        getCount(data_id);
-                        //console.log(data_id);
-                        //console.log(getCount(data_id));
-                    }
-                });
-
-            })
+            $(this).find('input[type=submit]').hide();
         });
-
-    </script>
-    <script>
-        function insertAtCaret(areaId, text) {
-            var txtarea = document.getElementById(areaId);
-            if (!txtarea) { return; }
-
-            var scrollPos = txtarea.scrollTop;
-            var strPos = 0;
-            var br = ((txtarea.selectionStart || txtarea.selectionStart == '0') ?
-                    "ff" : (document.selection ? "ie" : false ) );
-            if (br == "ie") {
-                txtarea.focus();
-                var range = document.selection.createRange();
-                range.moveStart ('character', -txtarea.value.length);
-                strPos = range.text.length;
-            } else if (br == "ff") {
-                strPos = txtarea.selectionStart;
-            }
-
-            var front = (txtarea.value).substring(0, strPos);
-            var back = (txtarea.value).substring(strPos, txtarea.value.length);
-            txtarea.value = front + text + back;
-            strPos = strPos + text.length;
-            if (br == "ie") {
-                txtarea.focus();
-                var ieRange = document.selection.createRange();
-                ieRange.moveStart ('character', -txtarea.value.length);
-                ieRange.moveStart ('character', strPos);
-                ieRange.moveEnd ('character', 0);
-                ieRange.select();
-            } else if (br == "ff") {
-                txtarea.selectionStart = strPos;
-                txtarea.selectionEnd = strPos;
-                txtarea.focus();
-            }
-
-            txtarea.scrollTop = scrollPos;
-        }
-    </script>
-
-    <style>
-        .image-upload > input {
-            display: none;
-        }
-
-    </style>
-    <style>
-        body {
-            background-color: #eeeeee;
-        }
-    </style>
-
-</head>
+    });
+</script>
 <body style="overflow-y: scroll;">
 
-<jsp:include page="fragments/top.jsp"/>
+<%@include file="fragments/top.jsp" %>
 <div class="container text-center">
     <div class="row">
         <jsp:include page="fragments/leftsidebar.jsp"/>
@@ -141,7 +49,8 @@
                                        name="${_csrf.parameterName}"
                                        value="${_csrf.token}"/>
                                 <section id="editable" contenteditable="true">
-                                        <textarea required id="tweet" placeholder="How are you?" maxlength=140;
+                                        <textarea required id="tweet" placeholder="<spring:message code='tweet_msg' />"
+                                                  maxlength=140;
                                                   style="border: none; box-shadow: none; resize: none; overflow: hidden; font-size: large"
                                                   name="text" aria-multiline="true" class="form-control"></textarea>
                                 </section>
@@ -164,18 +73,40 @@
                                     <div id="demo" class="collapse">
                                         <table style="font-size: xx-large">
                                             <tr>
-                                                <td><span style="cursor:pointer" onclick="insertAtCaret('tweet', ' 😁');return false;"> 😁</span></td>
-                                                <td><span style="cursor:pointer" onclick="insertAtCaret('tweet', ' 😉');return false;"> 😉</span></td>
-                                                <td><span style="cursor:pointer" onclick="insertAtCaret('tweet', ' 😃');return false;"> 😃</span></td>
-                                                <td><span style="cursor:pointer" onclick="insertAtCaret('tweet', ' 😆');return false;"> 😆</span></td>
-                                                <td><span style="cursor:pointer" onclick="insertAtCaret('tweet', ' 😍');return false;"> 😍</span></td>
-                                                <td><span style="cursor:pointer" onclick="insertAtCaret('tweet', ' 😝');return false;"> 😝</span></td>
+                                                <td><span style="cursor:pointer"
+                                                          onclick="insertAtCaret('tweet', ' 😁');return false;"> 😁</span>
+                                                </td>
+                                                <td><span style="cursor:pointer"
+                                                          onclick="insertAtCaret('tweet', ' 😉');return false;"> 😉</span>
+                                                </td>
+                                                <td><span style="cursor:pointer"
+                                                          onclick="insertAtCaret('tweet', ' 😃');return false;"> 😃</span>
+                                                </td>
+                                                <td><span style="cursor:pointer"
+                                                          onclick="insertAtCaret('tweet', ' 😆');return false;"> 😆</span>
+                                                </td>
+                                                <td><span style="cursor:pointer"
+                                                          onclick="insertAtCaret('tweet', ' 😍');return false;"> 😍</span>
+                                                </td>
+                                                <td><span style="cursor:pointer"
+                                                          onclick="insertAtCaret('tweet', ' 😝');return false;"> 😝</span>
+                                                </td>
 
-                                                <td><span style="cursor:pointer" onclick="insertAtCaret('tweet', ' 😞');return false;"> 😞</span></td>
-                                                <td><span style="cursor:pointer" onclick="insertAtCaret('tweet', ' 😠');return false;"> 😠</span></td>
-                                                <td><span style="cursor:pointer" onclick="insertAtCaret('tweet', ' 😫');return false;"> 😫</span></td>
-                                                <td><span style="cursor:pointer" onclick="insertAtCaret('tweet', ' 😢');return false;"> 😢</span></td>
-                                                <td><span style="cursor:pointer" onclick="insertAtCaret('tweet', ' 😘');return false;"> 😘</span></td>
+                                                <td><span style="cursor:pointer"
+                                                          onclick="insertAtCaret('tweet', ' 😞');return false;"> 😞</span>
+                                                </td>
+                                                <td><span style="cursor:pointer"
+                                                          onclick="insertAtCaret('tweet', ' 😠');return false;"> 😠</span>
+                                                </td>
+                                                <td><span style="cursor:pointer"
+                                                          onclick="insertAtCaret('tweet', ' 😫');return false;"> 😫</span>
+                                                </td>
+                                                <td><span style="cursor:pointer"
+                                                          onclick="insertAtCaret('tweet', ' 😢');return false;"> 😢</span>
+                                                </td>
+                                                <td><span style="cursor:pointer"
+                                                          onclick="insertAtCaret('tweet', ' 😘');return false;"> 😘</span>
+                                                </td>
                                             </tr>
                                             <tr>
 
@@ -234,13 +165,58 @@
                                               data-like="${t.id}"
                                               data-like2="${currentUser.id}"
                                               style="font-size: large; color: steelblue; text-decoration: none"></span>
-                                        <span class="likeCount">${t.likes}</span>
-                                        <a class="glyphicon glyphicon-comment pull-right"
-                                           style="font-size: large; color: steelblue; text-decoration: none"
-                                           href="${pageContext.request.contextPath}/tweet/${t.id}/addComment#myModal"></a>
+                                        <span class="likeCount">0</span>
+
+                                            <%--<a href="${pageContext.request.contextPath}/tweet/${t.id}/addComment">--%>
+                                        <span
+                                              class="glyphicon glyphicon-comment pull-right"
+                                              style="font-size: large; color: steelblue; text-decoration: none"
+                                                ></span>
+                                            <%--</a>--%>
+
+                                            <%--MODAL CSS--%>
+                                        <div>
+                                            <div>
+                                                <hr>
+                                                <form action="/tweet/addComment" method="post">
+                                                    <input type="hidden"
+                                                           name="${_csrf.parameterName}"
+                                                           value="${_csrf.token}"/>
+                                                    <input name="id" type="hidden" value="${t.id}">
+            <textarea id="autotxt" name="text" class="form-control animated" placeholder="Enter here to comment..."
+                      rows="1" style="resize:none; overflow: hidden;"></textarea>
+                                                    <%--<br>--%>
+                                                        <input type="submit"/>
+                                                </form>
+                                                <hr/>
+                                                <ul class="media-list">
+                                                    <c:forEach items="${allComments}" var="comment">
+                                                        <li class="small">
+                                                            <a href="/user/profile/${comment.user.username}"
+                                                               class="pull-left">
+                                                                <img src="${comment.user.avatar}"
+                                                                     class="img-circle photo"
+                                                                     height="25" width="25" alt="Avatar">
+                                                            </a>
+
+                                                            <div class="media-body">
+<span class="text-muted pull-right">
+<small class="text-muted">${comment.postDateTime.toLocalDate()}</small>
+</span>
+                                                                <a href="/user/profile/${comment.user.username}"><strong
+                                                                        class="text-success">@ ${comment.user.username}</strong></a>
+
+                                                                <div>${comment.text}</div>
+                                                            </div>
+                                                        </li>
+                                                        <hr>
+                                                    </c:forEach>
+                                                </ul>
+
+                                            </div>
+                                        </div>
+                                            <%--END OF MODAL--%>
                                     </article>
-
-
                                 </div>
                             </div>
                         </div>
@@ -248,16 +224,8 @@
                 </c:forEach>
             </div>
         </div>
-        <%--<ul class="pager">--%>
-        <%--<c:if test="${currentPage>0}">--%>
-        <%--<li><a href="/tweet/page=${currentPage-1}">Previous</a></li>--%>
-        <%--</c:if>--%>
-        <%--<c:if test="${currentPage*5+5<maxPage}">--%>
-        <%--<li><a href="/tweet/page=${currentPage+1}" id="next">Next</a></li>--%>
-        <%--</c:if>--%>
-        <%--</ul>--%>
 
-        <jsp:include page="modal.jsp"/>
+        <%--<jsp:include page="modal.jsp"/>--%>
 
         <!-- Side bar-->
         <jsp:include page="fragments/rightsidebar.jsp"/>

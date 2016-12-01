@@ -154,7 +154,7 @@
                                             <td width="33%" valign="top"
                                                 style="padding: 10px; background-color: #eeeeee">
                                                 <c:forEach items="${ifollow}" var="v" begin="0" step="3">
-                                                    <div class="twPc-div">
+                                                    <div class="twPc-div" id="one">
                                                         <a class="twPc-bg twPc-block"></a>
 
                                                         <div>
@@ -451,6 +451,20 @@
 
     <script>
 
+        <%--REMEMBER CURRENT TAB--%>
+        $(document).ready(function() {
+            if(location.hash) {
+                $('a[href=' + location.hash + ']').tab('show');
+            }
+            $(document.body).on("click", "a[data-toggle]", function(event) {
+                location.hash = this.getAttribute("href");
+            });
+        });
+        $(window).on('popstate', function() {
+            var anchor = location.hash || $("a[data-toggle=tab]").first().attr("href");
+            $('a[href=' + anchor + ']').tab('show');
+        });
+
         function sweetDelTwit() {
             var id = $(document.getElementById("tweet-id")).val();
             swal({
@@ -479,12 +493,21 @@
                 showCancelButton: true,
                 confirmButtonColor: '#3085d6',
                 cancelButtonColor: '#d33',
-                confirmButtonText: 'Yes, delete it!'
+                confirmButtonText: 'Yes, unfollow this user!'
 
             }).then(function () {
-
-                location.href = '/user/unfollow/' + id;
-
+//                $( "#menu1" ).load( "/unfollow/" + id);
+                $.ajax({
+                    url: '/unfollow/' + id,
+                    data: id,
+                    dataType: 'text',
+                    type: 'GET',
+                    });
+////                document.getElementById("one").hide().html(data).fadeIn('fast');
+//                location.href = '/unfollow/' + id;
+                location.reload().fadeIn('fast');
+////                $("#menu1").hide();
+//
             })
         }
     </script>

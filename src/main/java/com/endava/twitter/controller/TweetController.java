@@ -98,24 +98,25 @@ public class TweetController {
         return "redirect:/user/profile/";
     }
 
-    @RequestMapping(value = "/{id}/addComment", method = RequestMethod.GET)
-    public String addCommentGet(@PathVariable int id, Model model) {
-        init(model);
-//        model.addAttribute("tweet", new Tweet());
-//        model.addAttribute("allTweets", userService.allTweetsToShow(0, 5));
-//        model.addAttribute("IFollow", userService.getUsersIFollow());
-//        model.addAttribute("followingOffers", userService.getFollowersOffers(5));
-//        model.addAttribute("currentUser", userService.getUserByName(getPrincipal()));
-//        model.addAttribute("avatar", User.list);
-//        model.addAttribute("maxPage", userService.allTweetsToShow().size());
-        model.addAttribute("currentTweet", tweetService.getTweetById(id));
-        model.addAttribute("comments", tweetService.getComments(id));
-        return "tweet";
-    }
+//    @RequestMapping(value = "/{id}/addComment", method = RequestMethod.GET)
+//    public String addCommentGet(@PathVariable int id, Model model) {
+//        init(model);
+////        model.addAttribute("tweet", new Tweet());
+////        model.addAttribute("allTweets", userService.allTweetsToShow(0, 5));
+////        model.addAttribute("IFollow", userService.getUsersIFollow());
+////        model.addAttribute("followingOffers", userService.getFollowersOffers(5));
+////        model.addAttribute("currentUser", userService.getUserByName(getPrincipal()));
+////        model.addAttribute("avatar", User.list);
+////        model.addAttribute("maxPage", userService.allTweetsToShow().size());
+//        model.addAttribute("currentTweet", tweetService.getTweetById(id));
+//        model.addAttribute("comments", tweetService.getComments(id));
+//        return "tweet";
+//    }
 
-    @RequestMapping(value = "/{id}/addComment", method = RequestMethod.POST)
-    public String addComment(@PathVariable int id, @RequestParam String text, Model model) {
+    @RequestMapping(value = "/addComment", method = RequestMethod.POST)
+    public String addComment(@RequestParam int id, @RequestParam String text, Model model) {
         init(model);
+        model.addAttribute("allComments", tweetService.getComments(id));
 //        model.addAttribute("tweet", new Tweet());
 //        model.addAttribute("allTweets", userService.allTweetsToShow(0, 5));
 //        model.addAttribute("IFollow", userService.getUsersIFollow());
@@ -124,7 +125,7 @@ public class TweetController {
 //        model.addAttribute("avatar", User.list);
 //        model.addAttribute("maxPage", userService.allTweetsToShow().size());
         commentService.addComment(new Comment(userService.getUserByName(getPrincipal()), tweetService.getTweetById(id), text));
-        return "redirect:/tweet/{id}/addComment#myModal";
+        return "redirect:/tweet";
     }
 
     private String getPrincipal() {

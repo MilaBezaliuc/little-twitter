@@ -11,9 +11,9 @@
         http://www.springframework.org/schema/mvc
         http://www.springframework.org/schema/mvc/spring-mvc.xsd">
     
-    <mvc:resources mapping="/images/**" location="file:/C:/Program Files (x86)/Java_ADD/apache-tomcat-8.5.4/webapps/images/"/>
+    <mvc:resources mapping="/images/**" location="file:///#{systemEnvironment['catalina.home']}/webapps/images/"/>
     <!--/opt/tomcat/webapps/images/-->
-    <!-- Mila home-->
+    <!-- Mila file:/C:/Program Files (x86)/Java_ADD/apache-tomcat-8.5.4/webapps/images/ home-->
     <!-- Endava file:/C:/Program Files/JavaUtil/apache-tomcat-8.5.5/webapps/images/-->
 
     <context:component-scan base-package="com.endava.twitter"/>
@@ -30,9 +30,27 @@
         <property name="suffix" value=".jsp"/>
     </bean>
 
-    <bean class="org.springframework.context.support.ResourceBundleMessageSource" id="messageSource">
+    <bean class="org.springframework.context.support.ResourceBundleMessageSource" id="validationSource">
         <property name="basenames" value="validation"/>
     </bean>
+
+    <bean id="messageSource" class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
+         <property name="defaultEncoding" value="UTF-8"/>
+        <property name="basenames" value="/WEB-INF/messages"/>
+        <property name="fallbackToSystemLocale" value="false"/>
+    </bean>
+
+    <bean id="localeResolver" class="org.springframework.web.servlet.i18n.CookieLocaleResolver">
+        <property name="defaultLocale" value="ru"/>
+    </bean>
+
+    <mvc:interceptors>
+        <bean class="com.endava.twitter.util.ModelInterceptor"/>
+        <bean id="localeChangeInterceptor" class="org.springframework.web.servlet.i18n.LocaleChangeInterceptor">
+            <property name="paramName" value="lang"/>
+        </bean>
+    </mvc:interceptors>
+
 
     <context:property-placeholder location="classpath:database.properties"/>
 

@@ -2,7 +2,8 @@
 <%--<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.js"></script>--%>
 <%--<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.js"></script>--%>
 <%--MODAL CSS--%>
-<div id="myModal" class="mmodalDialog">
+<div data-toggle="collapse"
+     data-target="#demo2">
     <div>
         <h3>${currentTweet.user.username}</h3>
         <span style="text-align: left;">
@@ -48,3 +49,4 @@
             </span>
     </div>
 </div>
+<%--END OF MODAL--%>
